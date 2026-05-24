@@ -418,13 +418,13 @@
           <span class="num-ring">1</span>
           <h4 class="text-xl font-bold text-ink-900">Model Architecture</h4>
         </div>
-        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-6xl">
           NMM systems assign distinct functional roles to comprehend and generate different modalities.
           The functional categories are defined by their <strong>input&ndash;output configurations</strong>
           (M2T / M2G / M2M), orthogonal to the architectural taxonomy of <em>mid-fusion</em> vs.
           <em>early-fusion</em>; each category contains representatives of both fusion paradigms.
         </p>
-        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-4xl">
+        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-6xl">
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2T &mdash; Unimodal Generation.</strong> Image/Audio/Video comprehension via modality unification, multi-image reasoning, multi-scale encoding, and perception-reasoning decoupling (Llama-4, Kimi K2.5, Qwen3-VL, GLM-5V-Turbo).</span></li>
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2G &mdash; Scenario-based Generation.</strong> High-fidelity image generation, low-latency audio synthesis with streaming synergy, and video generation with audio&ndash;visual alignment via unified timelines (MiniCPM-o 4.5, Qwen3-Omni).</span></li>
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2M &mdash; Symmetric Modeling.</strong> Two competing routes: <em>fully-discretized unified</em> (loss from discretizing, competition-driven latency) vs. <em>modality-specificity preserving</em> (comprehension&ndash;generation dilemma, bridging AR and Diffusion).</span></li>
@@ -482,7 +482,7 @@
           <span class="num-ring">3</span>
           <h4 class="text-xl font-bold text-ink-900">Datasets</h4>
         </div>
-        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-6xl">
           Native multimodal data spans heterogeneous mixtures across text, image, video, audio,
           documents, GUI states, tool-use traces, and preference signals. We organize them by
           <strong>functional role</strong> &mdash; <em>Understand</em>, <em>Generate</em>,
@@ -645,13 +645,13 @@
           <span class="num-ring">4</span>
           <h4 class="text-xl font-bold text-ink-900">Inference &amp; Deployment</h4>
         </div>
-        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-6xl">
           Native pretraining amplifies the long-context problem: a single high-resolution image, document,
           or long video balloons into thousands or millions of tokens. Efficient serving therefore attacks
           <strong>sequence explosion</strong>, the <strong>heterogeneity-scale tension</strong>, and
           <strong>full-duplex streaming</strong> simultaneously.
         </p>
-        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-4xl">
+        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-6xl">
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Visual resampling, dynamic resolution, and spatially sparse perception (VisionZip, SparseVLM, FitPrune).</span></li>
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Pure discrete tokenization vs. MoE / hybrid routing trade-offs.</span></li>
           <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Full-duplex state management, adaptive-bitrate control, modality-aware mixed quantization.</span></li>
@@ -666,7 +666,7 @@
           <span class="num-ring">5</span>
           <h4 class="text-xl font-bold text-ink-900">Evaluation</h4>
         </div>
-        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-6xl">
           Native architectures demand evaluation that simultaneously verifies
           <em>understanding</em> (perception, reasoning, grounding) and <em>generation</em>
           (synthesis, editing, controllability) without one-sided regression. We organize
