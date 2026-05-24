@@ -1,0 +1,862 @@
+[
+  {
+    "name": "Kimi K2.5",
+    "category": "M2T",
+    "date": "2026.01",
+    "params": "1TA32B",
+    "cite_key": "KimiK2_5_2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "CogVLM",
+    "category": "M2T",
+    "date": "2023.11",
+    "params": "17B",
+    "cite_key": "wang2023cogvlm",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Video-LLaVA",
+    "category": "M2T",
+    "date": "2023.11",
+    "params": "13B",
+    "cite_key": "lin2023video",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Qwen-Audio",
+    "category": "M2T",
+    "date": "2023.11",
+    "params": "13B",
+    "cite_key": "chu2023qwenaudioadvancinguniversalaudio",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Qwen2.5-VL",
+    "category": "M2T",
+    "date": "2025.02",
+    "params": "72B",
+    "cite_key": "bai2025qwen25vltechnicalreport",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Llama-4-Scout",
+    "category": "M2T",
+    "date": "2025.04",
+    "params": "109BA17B",
+    "cite_key": "Adcock2026TheL4",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Llama-4-Maverick",
+    "category": "M2T",
+    "date": "2025.04",
+    "params": "400BA17B",
+    "cite_key": "Adcock2026TheL4",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Nemotron3-Nano-Omni",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "30BA3B",
+    "cite_key": "nvidia2026nemotron3nanoomni",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "MiMo-V2.5",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "310BA15B",
+    "cite_key": "xiaomi2026mimov25",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Qwen3.6",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "27B",
+    "cite_key": "qwen36_35b_a3b",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Gemma-4-31B",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "31B",
+    "cite_key": "Gemma4Team2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Gemma-4-E4B",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "4.5B(8B)",
+    "cite_key": "Gemma4Team2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "GLM-5V-Turbo",
+    "category": "M2T",
+    "date": "2026.04",
+    "params": "744BA40B",
+    "cite_key": "GLM5VTurbo2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "MiniCPM-V-4.6",
+    "category": "M2T",
+    "date": "2026.05",
+    "params": "1B",
+    "cite_key": "yu2025minicpmv45cookingefficient",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "InternVL-3.5",
+    "category": "M2T",
+    "date": "2025.08",
+    "params": "241BA28B",
+    "cite_key": "InternVL3.5_2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Qwen3-VL",
+    "category": "M2T",
+    "date": "2025.09",
+    "params": "235BA22B",
+    "cite_key": "bai2025qwen3vltechnicalreport",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "LTX-2.2",
+    "category": "M2G",
+    "date": "2025.10",
+    "params": "19B",
+    "cite_key": "LightricksLTX2_2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": true,
+      "video": true
+    }
+  },
+  {
+    "name": "Ming-Flash-Omni-2.0",
+    "category": "M2G",
+    "date": "2026.02",
+    "params": "100BA6B",
+    "cite_key": "ai2026mingflashomnisparseunifiedarchitecture",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "MiniCPM-o-4.5",
+    "category": "M2G",
+    "date": "2026.02",
+    "params": "9B",
+    "cite_key": "MiniCPMo45_2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "Kling-Omni",
+    "category": "M2G",
+    "date": "2025.12",
+    "params": "-",
+    "cite_key": "klingteam2025klingomnitechnicalreport",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "HunyuanVideo-1.5",
+    "category": "M2G",
+    "date": "2025.12",
+    "params": "8.3B",
+    "cite_key": "HunyuanVideo15_2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "LTX-2.3",
+    "category": "M2G",
+    "date": "2026.03",
+    "params": "19B",
+    "cite_key": "LightricksLTX2_2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": true,
+      "video": true
+    }
+  },
+  {
+    "name": "Seedream3.0",
+    "category": "M2G",
+    "date": "2025.04",
+    "params": "12B",
+    "cite_key": "gao2025seedream30technicalreport",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "OmniVoice",
+    "category": "M2G",
+    "date": "2026.04",
+    "params": "0.8B",
+    "cite_key": "zhu2026omnivoiceomnilingualzeroshottexttospeech",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "HiDream-O1-Image",
+    "category": "M2G",
+    "date": "2026.05",
+    "params": "8B",
+    "cite_key": "hidreamolimage",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Wan2.2-T2V-A14B",
+    "category": "M2G",
+    "date": "2025.07",
+    "params": "27BA14B",
+    "cite_key": "wan22_2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": false,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "Wan2.2-TI2V-5B",
+    "category": "M2G",
+    "date": "2025.07",
+    "params": "5B",
+    "cite_key": "wan22_2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": false,
+      "image": false,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "Qwen3-Omni",
+    "category": "M2G",
+    "date": "2025.09",
+    "params": "30BA3B",
+    "cite_key": "Qwen3Omni2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "Emu3.5",
+    "category": "M2M",
+    "date": "2025.10",
+    "params": "34.1B",
+    "cite_key": "cui2025emu35nativemultimodalmodels",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "Janus-Pro",
+    "category": "M2M",
+    "date": "2025.01",
+    "params": "7B",
+    "cite_key": "DeepSeekJanusPro2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "AnyGPT",
+    "category": "M2M",
+    "date": "2024.02",
+    "params": "7B",
+    "cite_key": "zhan2024anygpt",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "TUNA-2",
+    "category": "M2M",
+    "date": "2026.04",
+    "params": "7B",
+    "cite_key": "liu2026tuna2pixelembeddingsbeat",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "SenseNova-U1-8B-MoT",
+    "category": "M2M",
+    "date": "2026.04",
+    "params": "8B(18B)",
+    "cite_key": "diao2026sensenovau1unifyingmultimodalunderstanding",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "LLaDA2.0-Uni",
+    "category": "M2M",
+    "date": "2026.04",
+    "params": "16BA1B",
+    "cite_key": "ai2026llada20uniunifyingmultimodalunderstanding",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "LongCat-Next",
+    "category": "M2M",
+    "date": "2026.04",
+    "params": "68.5BA3B",
+    "cite_key": "MeituanLongCat2026",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "Chameleon",
+    "category": "M2M",
+    "date": "2024.05",
+    "params": "34B",
+    "cite_key": "team2024chameleon",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "BAGEL",
+    "category": "M2M",
+    "date": "2025.05",
+    "params": "14BA7B",
+    "cite_key": "BAGEL7B2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "Lance",
+    "category": "M2M",
+    "date": "2026.05",
+    "params": "3B",
+    "cite_key": "fu2026lanceunifiedmultimodalmodeling",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "Mamoda2.5",
+    "category": "M2M",
+    "date": "2026.05",
+    "params": "25BA3B",
+    "cite_key": "shi2026mamoda25enhancingunifiedmultimodal",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Transfusion",
+    "category": "M2M",
+    "date": "2024.08",
+    "params": "7B",
+    "cite_key": "zhou2024transfusion",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": false
+    }
+  },
+  {
+    "name": "Moshi",
+    "category": "M2M",
+    "date": "2024.09",
+    "params": "7B",
+    "cite_key": "defossez2024moshispeechtextfoundationmodel",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": false,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": false,
+      "audio": true,
+      "video": false
+    }
+  },
+  {
+    "name": "Show-o2",
+    "category": "M2M",
+    "date": "2025.09",
+    "params": "7B",
+    "cite_key": "xie2025showo2improvednativeunified",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": false,
+      "video": true
+    }
+  },
+  {
+    "name": "OneCAT",
+    "category": "M2M",
+    "date": "2025.09",
+    "params": "9BA3B",
+    "cite_key": "OneCAT3B2025",
+    "discrete_unified": false,
+    "input": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    },
+    "output": {
+      "text": true,
+      "image": true,
+      "audio": true,
+      "video": false
+    }
+  }
+]

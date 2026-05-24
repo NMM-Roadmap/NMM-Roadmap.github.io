@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Toward Native Multimodal Modeling: A Roadmap</title>
+<meta name="description" content="A structured roadmap for native multimodal modeling (NMM) — survey of architecture, data, training, inference and evaluation."/>
+<meta property="og:title" content="Toward Native Multimodal Modeling: A Roadmap"/>
+<meta property="og:type"  content="article"/>
+
+<!-- Tailwind via CDN, no build step -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Alpine.js for reactivity -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Chart.js for the timeline chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Inter font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          ink:    { 50:'#f5f7fa', 100:'#e4e9f0', 600:'#475569', 800:'#1e293b', 900:'#0f172a' },
+          accent: { 50:'#eff6ff', 200:'#bfdbfe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8' },
+          m2t:    { 50:'#eff6ff', 200:'#bfdbfe', 500:'#3b82f6', 700:'#1d4ed8' },
+          m2g:    { 50:'#fffbeb', 200:'#fde68a', 500:'#f59e0b', 700:'#b45309' },
+          m2m:    { 50:'#fef2f2', 200:'#fecaca', 500:'#ef4444', 700:'#b91c1c' },
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  .grad-hero {
+    background:
+      radial-gradient(circle at 20% 0%, rgba(59,130,246,.18), transparent 40%),
+      radial-gradient(circle at 80% 30%, rgba(245,158,11,.16), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(239,68,68,.14), transparent 45%),
+      linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  }
+  /* hide chevron of native details */
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  /* scrollbar polish */
+  .scroll-smooth-x { scrollbar-width: thin; }
+  .scroll-smooth-x::-webkit-scrollbar { height: 8px; }
+  .scroll-smooth-x::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  /* category badges */
+  .badge { display:inline-flex; align-items:center; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.02em; }
+  .b-m2t { background:#dbeafe; color:#1e40af; }
+  .b-m2g { background:#fef3c7; color:#92400e; }
+  .b-m2m { background:#fee2e2; color:#991b1b; }
+  .b-disc { background:#f3e8ff; color:#6b21a8; }
+  /* modality dot */
+  .mdot { width: 0.55rem; height: 0.55rem; border-radius: 9999px; display:inline-block; }
+  .mdot-on  { background: currentColor; opacity: 1; }
+  .mdot-off { background: #e2e8f0; }
+  /* taxonomy cell hover */
+  .tcell { transition: all .18s ease; }
+  .tcell:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px rgba(15,23,42,.25); }
+  /* contributions number ring */
+  .num-ring {
+    width: 2.25rem; height: 2.25rem; border-radius: 9999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; color:#1e40af; background: #eff6ff; border: 1px solid #bfdbfe;
+  }
+  /* anchor offset for sticky nav */
+  section[id] { scroll-margin-top: 80px; }
+  /* fade-in on load */
+  .fade-in { animation: fade-in .6s ease both; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+
+<body class="bg-white text-ink-900 antialiased">
+
+<!-- ============================================================== -->
+<!-- TOP NAV                                                         -->
+<!-- ============================================================== -->
+<nav class="sticky top-0 z-50 border-b border-ink-100 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
+    <a href="#top" class="font-semibold text-sm flex items-center gap-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-accent-500"></span>
+      <span>NMM Roadmap</span>
+    </a>
+    <div class="hidden md:flex items-center gap-6 text-sm text-ink-600">
+      <a href="#tldr"     class="hover:text-ink-900">TL;DR</a>
+      <a href="#taxonomy" class="hover:text-ink-900">Taxonomy</a>
+      <a href="#explorer" class="hover:text-ink-900">Model&nbsp;Explorer</a>
+      <a href="#timeline" class="hover:text-ink-900">Timeline</a>
+      <a href="#sections" class="hover:text-ink-900">Sections</a>
+      <a href="#bibtex"   class="hover:text-ink-900">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================== -->
+<!-- HERO                                                            -->
+<!-- ============================================================== -->
+<header id="top" class="grad-hero border-b border-ink-100">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-16 pb-20 fade-in">
+    <div class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold mb-3">
+      Survey
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold leading-tight tracking-tight text-ink-900">
+      Toward Native Multimodal Modeling:<br/>
+      <span class="text-accent-700">A Roadmap</span>
+    </h1>
+
+    <div class="mt-6 text-ink-600 text-sm sm:text-base">
+      <span>Affiliation TBD</span>
+    </div>
+
+    <p class="mt-6 max-w-3xl text-ink-600 leading-relaxed">
+      Multimodal modeling represents a vital step from modality-agnostic reasoning toward world modeling.
+      We formalize the architectural <em>nativity</em>, distinguish <em>mid-fusion</em> and <em>early-fusion</em> from
+      non-native paradigms, and survey the end-to-end NMM pipeline along the input&ndash;output duality
+      axis (M2T / M2G / M2M) across architecture, data, training, inference, and evaluation.
+    </p>
+
+    <!-- action buttons -->
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium hover:bg-ink-800 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        Paper&nbsp;PDF
+      </a>
+      <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium hover:bg-ink-50 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        arXiv
+      </a>
+      <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium hover:bg-ink-50 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+        Code
+      </a>
+      <button @click="navigator.clipboard.writeText(document.getElementById('bibtex-text').textContent.trim()); $event.target.textContent='Copied!'; setTimeout(()=>$event.target.textContent='Copy BibTeX', 1500)"
+              x-data
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-200 bg-accent-50 text-accent-700 text-sm font-medium hover:bg-accent-50/60 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Copy&nbsp;BibTeX
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================== -->
+<!-- TL;DR                                                           -->
+<!-- ============================================================== -->
+<section id="tldr" class="border-b border-ink-100 bg-white">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">TL;DR</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Three takeaways</h3>
+
+    <div class="mt-8 grid sm:grid-cols-3 gap-4">
+      <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
+        <span class="num-ring mb-3">i</span>
+        <h4 class="font-semibold text-ink-900">Two-axis taxonomy</h4>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">
+          Architectural <em>nativity</em> (mid-fusion vs early-fusion) is orthogonal to
+          input&ndash;output <em>duality</em> (M2T / M2G / M2M). Together they make a precise
+          map for emergent NMM designs.
+        </p>
+      </article>
+      <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
+        <span class="num-ring mb-3">ii</span>
+        <h4 class="font-semibold text-ink-900">Each fusion regime imposes a training signature</h4>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">
+          Mid-fusion needs progressive unfreezing + differential LR; early-fusion makes
+          z-loss, QK-Norm, and modality-mixture scheduling preconditions, not refinements.
+        </p>
+      </article>
+      <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
+        <span class="num-ring mb-3">iii</span>
+        <h4 class="font-semibold text-ink-900">RL scope &amp; OPD</h4>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">
+          Pathway-locality collapses under early-fusion's unified softmax, exposing
+          grounding-hack and see-saw failures &mdash; for which on-policy distillation (OPD)
+          is emerging as the structural response.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- TAXONOMY MATRIX                                                 -->
+<!-- ============================================================== -->
+<section id="taxonomy" class="border-b border-ink-100 bg-ink-50/40">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12"
+       x-data="{ active: null }">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Taxonomy</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">A two-axis map of NMM</h3>
+    <p class="mt-3 text-ink-600 max-w-3xl">
+      Click any cell to see representative models for that combination of fusion regime
+      and input&ndash;output duality.
+    </p>
+
+    <div class="mt-8 overflow-x-auto scroll-smooth-x">
+      <table class="w-full min-w-[560px] text-sm border-separate border-spacing-2">
+        <thead>
+          <tr class="text-ink-600 text-xs uppercase tracking-wider">
+            <th></th>
+            <th class="text-left pl-2 pb-2"><span class="badge b-m2t">M2T</span> Multi-to-Text</th>
+            <th class="text-left pl-2 pb-2"><span class="badge b-m2g">M2G</span> Multi-to-Target</th>
+            <th class="text-left pl-2 pb-2"><span class="badge b-m2m">M2M</span> Multi-to-Multi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="row in [
+            { fusion:'mid',   label:'Mid-fusion',   note:'Encoder + projector + joint backbone' },
+            { fusion:'early', label:'Early-fusion', note:'Unified embedding + one shared backbone' },
+          ]">
+            <tr>
+              <th class="text-right align-top pr-3 pt-3 text-ink-800 font-semibold">
+                <div x-text="row.label"></div>
+                <div class="text-xs text-ink-600 font-normal" x-text="row.note"></div>
+              </th>
+              <template x-for="cat in ['M2T','M2G','M2M']">
+                <td class="align-top">
+                  <button class="tcell w-full text-left rounded-xl p-4 border bg-white"
+                          :class="{
+                            'border-m2t-200': cat==='M2T' && active && active.cat===cat && active.fusion===row.fusion,
+                            'border-m2g-200': cat==='M2G' && active && active.cat===cat && active.fusion===row.fusion,
+                            'border-m2m-200': cat==='M2M' && active && active.cat===cat && active.fusion===row.fusion,
+                            'border-ink-100':   !(active && active.cat===cat && active.fusion===row.fusion),
+                          }"
+                          @click="active = active && active.cat===cat && active.fusion===row.fusion ? null : { cat, fusion: row.fusion }">
+                    <div class="text-xs uppercase tracking-wider"
+                         :class="{ 'text-m2t-700':cat==='M2T','text-m2g-700':cat==='M2G','text-m2m-700':cat==='M2M' }"
+                         x-text="cat + ' &middot; ' + row.label"></div>
+                    <div class="mt-1 text-ink-900 font-medium text-sm leading-snug"
+                         x-text="taxonomyEntry(cat,row.fusion).head"></div>
+                    <div class="mt-2 flex flex-wrap gap-1.5">
+                      <template x-for="ex in taxonomyEntry(cat,row.fusion).examples">
+                        <span class="text-[11px] px-1.5 py-0.5 rounded bg-ink-50 text-ink-600" x-text="ex"></span>
+                      </template>
+                    </div>
+                  </button>
+                </td>
+              </template>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Detail panel -->
+    <div x-show="active" x-transition class="mt-6 rounded-xl border border-ink-100 bg-white p-5">
+      <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-ink-600">
+        <span class="badge"
+              :class="{'b-m2t':active && active.cat==='M2T','b-m2g':active && active.cat==='M2G','b-m2m':active && active.cat==='M2M'}"
+              x-text="active && active.cat"></span>
+        <span x-text="active && active.fusion + '-fusion'"></span>
+      </div>
+      <p class="mt-2 text-ink-800" x-text="active && taxonomyEntry(active.cat, active.fusion).detail"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- MODEL EXPLORER                                                  -->
+<!-- ============================================================== -->
+<section id="explorer" class="border-b border-ink-100 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12"
+       x-data="modelExplorer()" x-init="init()">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Model Explorer</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">
+      Search the NMM landscape (<span x-text="filtered.length"></span> / <span x-text="models.length"></span> models)
+    </h3>
+
+    <!-- Filter bar -->
+    <div class="mt-6 grid md:grid-cols-[1fr_auto_auto] gap-3 items-stretch">
+      <input type="search" placeholder="Search by model name..."
+             x-model="query"
+             class="w-full px-4 py-2 rounded-lg border border-ink-100 bg-white focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none text-sm" />
+      <div class="flex items-center gap-2 px-1">
+        <span class="text-xs text-ink-600">Category:</span>
+        <template x-for="c in ['all','M2T','M2G','M2M']">
+          <button @click="cat=c"
+                  class="px-3 py-1.5 rounded-md text-xs font-medium border"
+                  :class="cat===c
+                          ? (c==='M2T'?'bg-m2t-50 border-m2t-200 text-m2t-700':
+                             c==='M2G'?'bg-m2g-50 border-m2g-200 text-m2g-700':
+                             c==='M2M'?'bg-m2m-50 border-m2m-200 text-m2m-700':
+                                       'bg-ink-900 border-ink-900 text-white')
+                          : 'bg-white border-ink-100 text-ink-600 hover:bg-ink-50'"
+                  x-text="c"></button>
+        </template>
+      </div>
+      <div class="flex items-center gap-2 px-1">
+        <span class="text-xs text-ink-600">Sort:</span>
+        <select x-model="sortBy" class="px-2 py-1.5 rounded-md border border-ink-100 bg-white text-xs">
+          <option value="date_desc">Newest first</option>
+          <option value="date_asc">Oldest first</option>
+          <option value="name">Name (A&ndash;Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Modality filters -->
+    <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-ink-600">
+      <span class="font-medium text-ink-800">Filter by modality:</span>
+      <template x-for="m in modalities">
+        <label class="flex items-center gap-1 px-2 py-1 rounded border border-ink-100 hover:bg-ink-50 cursor-pointer">
+          <input type="checkbox" x-model="modalityFilter[m.key]" class="w-3 h-3 accent-accent-500" />
+          <span x-text="m.label"></span>
+        </label>
+      </template>
+      <button @click="resetFilters()"
+              class="ml-auto text-xs text-ink-600 hover:text-accent-700 underline underline-offset-2">
+        Reset filters
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div class="mt-6 overflow-x-auto rounded-xl border border-ink-100 scroll-smooth-x">
+      <table class="w-full min-w-[800px] text-sm">
+        <thead class="bg-ink-50 text-ink-600 text-xs uppercase tracking-wider">
+          <tr>
+            <th class="text-left px-4 py-2.5">Model</th>
+            <th class="text-left px-3 py-2.5">Cat.</th>
+            <th class="text-left px-3 py-2.5">Date</th>
+            <th class="text-left px-3 py-2.5">Params</th>
+            <th class="text-center px-3 py-2.5">Input&nbsp;(T&middot;I&middot;A&middot;V)</th>
+            <th class="text-center px-3 py-2.5">Output&nbsp;(T&middot;I&middot;A&middot;V)</th>
+            <th class="text-center px-3 py-2.5">Disc&nbsp;Unif.</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-100">
+          <template x-for="m in filtered" :key="m.name">
+            <tr class="hover:bg-ink-50/40">
+              <td class="px-4 py-2.5 font-medium text-ink-900" x-text="m.name"></td>
+              <td class="px-3 py-2.5">
+                <span class="badge"
+                      :class="m.category==='M2T'?'b-m2t':m.category==='M2G'?'b-m2g':'b-m2m'"
+                      x-text="m.category"></span>
+              </td>
+              <td class="px-3 py-2.5 text-ink-600 font-mono text-xs" x-text="m.date"></td>
+              <td class="px-3 py-2.5 text-ink-600 font-mono text-xs" x-text="m.params"></td>
+              <td class="px-3 py-2.5">
+                <div class="flex items-center justify-center gap-1.5"
+                     :class="{'text-m2t-700':m.category==='M2T','text-m2g-700':m.category==='M2G','text-m2m-700':m.category==='M2M'}">
+                  <template x-for="k in ['text','image','audio','video']">
+                    <span class="mdot" :class="m.input[k]?'mdot-on':'mdot-off'" :title="k"></span>
+                  </template>
+                </div>
+              </td>
+              <td class="px-3 py-2.5">
+                <div class="flex items-center justify-center gap-1.5"
+                     :class="{'text-m2t-700':m.category==='M2T','text-m2g-700':m.category==='M2G','text-m2m-700':m.category==='M2M'}">
+                  <template x-for="k in ['text','image','audio','video']">
+                    <span class="mdot" :class="m.output[k]?'mdot-on':'mdot-off'" :title="k"></span>
+                  </template>
+                </div>
+              </td>
+              <td class="px-3 py-2.5 text-center">
+                <span x-show="m.discrete_unified" class="badge b-disc">discrete</span>
+                <span x-show="!m.discrete_unified" class="text-ink-100">&middot;</span>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-3 text-xs text-ink-600">
+      Filled dots = supported modality. The
+      <span class="badge b-disc">discrete</span> tag marks models employing the
+      fully-discretized unified scheme.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- TIMELINE CHART                                                  -->
+<!-- ============================================================== -->
+<section id="timeline" class="border-b border-ink-100 bg-ink-50/40">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Timeline</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Release momentum across 2024&ndash;2026</h3>
+    <p class="mt-2 text-ink-600 max-w-3xl">
+      Native multimodal architectures have accelerated sharply since 2024, with M2M (symmetric) systems
+      catching up to the dominant M2T pipeline. Per-month counts of releases by category.
+    </p>
+    <div class="mt-6 rounded-xl border border-ink-100 bg-white p-4">
+      <canvas id="timelineChart" height="120"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SECTIONS OVERVIEW                                               -->
+<!-- ============================================================== -->
+<section id="sections" class="border-b border-ink-100 bg-white">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Paper Outline</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">What's in the paper</h3>
+
+    <div class="mt-8 grid md:grid-cols-2 gap-4" x-data="{open: null}">
+      <template x-for="(s, idx) in sections">
+        <article class="rounded-xl border border-ink-100 hover:border-accent-200 hover:bg-accent-50/20 transition">
+          <button @click="open = open===idx ? null : idx"
+                  class="w-full text-left p-5 flex items-start gap-4">
+            <span class="num-ring flex-shrink-0" x-text="s.num"></span>
+            <div class="flex-1">
+              <h4 class="font-semibold text-ink-900" x-text="s.title"></h4>
+              <p class="mt-1 text-sm text-ink-600" x-text="s.lead"></p>
+            </div>
+            <svg class="w-5 h-5 text-ink-600 mt-1 transition" :class="open===idx ? 'rotate-180':''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div x-show="open===idx" x-transition class="px-5 pb-5 -mt-2 text-sm text-ink-600 leading-relaxed">
+            <ul class="list-disc list-inside space-y-1">
+              <template x-for="b in s.bullets"><li x-text="b"></li></template>
+            </ul>
+          </div>
+        </article>
+      </template>
+    </div>
+  </div>
+
+  <script>
+    window.__SECTIONS__ = [
+      { num:'1', title:'Introduction',
+        lead:'Late-fusion blindness motivates the paradigm shift to native multimodal modeling.',
+        bullets:[
+          'Bottleneck: text-only interface caps cross-modal grounding.',
+          'Two orthogonal axes: architectural nativity and I/O duality.',
+          'Three contributions: formal definitions, taxonomy, industrial-grade end-to-end synthesis.',
+        ]},
+      { num:'2', title:'Task Formalization',
+        lead:'Mid-fusion vs early-fusion, defined by where modality features cross.',
+        bullets:[
+          'Architectural nativity: depth of cross-modal integration.',
+          'I/O duality: M2T (understand) / M2G (targeted gen) / M2M (symmetric).',
+          'Both axes are orthogonal and combine into 6 design cells.',
+        ]},
+      { num:'3', title:'Model Architecture',
+        lead:'Per-modality challenges and technical routes for M2T, M2G, and M2M.',
+        bullets:[
+          'M2T: modality unification, multi-image reasoning, multi-scale encoding (image/audio/video).',
+          'M2G: high visual fidelity, controllability; latency control & streaming synergy for audio.',
+          'M2M: discrete-unified vs modality-specificity-preserving architectures.',
+        ]},
+      { num:'4', title:'Data',
+        lead:'Four functional axes layered across pretraining, SFT, and RL.',
+        bullets:[
+          'Understanding / Generation / Interaction / Preference.',
+          'Mixture and curriculum scheduling per training stage.',
+          'See Appendix C for the full per-dataset inventory and modality coverage table.',
+        ]},
+      { num:'5', title:'Training',
+        lead:'Each fusion regime imposes a distinct training signature.',
+        bullets:[
+          'PT: progressive unfreezing + differential LR (mid); joint-from-start + z-loss/QK-Norm (early).',
+          'SFT: only mid-fusion can rewire freezing; early-fusion only rebalances mixture.',
+          'RL: policy scope is dictated by fusion regime, not algorithm. OPD/MOPD as terminal step.',
+        ]},
+      { num:'6', title:'Inference & Deployment',
+        lead:'Long-context explosion, heterogeneity-scale tension, and full-duplex serving.',
+        bullets:[
+          'Visual resampling, dynamic resolution, and spatially sparse perception.',
+          'Pure discrete tokenization vs MoE/hybrid routing trade-offs.',
+          'Streaming, full-duplex, adaptive-bitrate, and modality-aware quantization.',
+        ]},
+      { num:'7', title:'Evaluation',
+        lead:'Image, audio, and video benchmarks split by understanding vs generation.',
+        bullets:[
+          'Image: MMBench, MMMU, GenEval, T2I-CompBench, ImageReward.',
+          'Audio: LibriSpeech, FLEURS, MMAU; full-duplex interaction benchmarks.',
+          'Video: VBench, Video-MME, VideoPhy and audio-visual sync.',
+        ]},
+    ];
+  </script>
+</section>
+
+<!-- ============================================================== -->
+<!-- BIBTEX                                                          -->
+<!-- ============================================================== -->
+<section id="bibtex" class="border-b border-ink-100 bg-ink-50/40">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Cite</h2>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">BibTeX</h3>
+
+    <div class="mt-6 rounded-xl border border-ink-100 bg-white overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2 bg-ink-50 border-b border-ink-100">
+        <span class="text-xs text-ink-600 font-mono">paper.bib</span>
+        <button @click="navigator.clipboard.writeText(document.getElementById('bibtex-text').textContent.trim()); $event.target.textContent='Copied!'; setTimeout(()=>$event.target.textContent='Copy', 1500)"
+                x-data
+                class="text-xs px-2.5 py-1 rounded border border-ink-100 hover:bg-ink-100 transition">
+          Copy
+        </button>
+      </div>
+      <pre id="bibtex-text" class="px-4 py-4 text-xs sm:text-sm font-mono text-ink-800 overflow-x-auto scroll-smooth-x leading-relaxed">@inproceedings{nmm2026roadmap,
+  title     = {Toward Native Multimodal Modeling: A Roadmap},
+  author    = {Anonymous},
+  booktitle = {Proceedings of EMNLP 2026},
+  year      = {2026},
+  url       = {https://example.org/nmm-roadmap},
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- FOOTER                                                          -->
+<!-- ============================================================== -->
+<footer class="bg-white">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-xs text-ink-600 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+    <div>
+      Project page for <span class="font-medium">Toward Native Multimodal Modeling: A Roadmap</span>.
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="#top" class="hover:text-accent-700">Back to top</a>
+      <span>&middot;</span>
+      <span>Made with Tailwind &amp; Alpine.js</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ============================================================== -->
+<!-- SCRIPTS                                                         -->
+<!-- ============================================================== -->
+<script>
+// Per-cell summaries used by the taxonomy matrix
+const TAXONOMY = {
+  'M2T:mid':   { head: 'Encoder-projected vision/audio + frozen-then-unlocked LLM.',
+                 examples: ['Qwen3-VL', 'InternVL-3.5', 'Kimi K2.5', 'CogVLM'],
+                 detail: 'Continuous encoder features are projected into the LLM latent space; mid-fusion gains progressive unfreezing, differential LR, and decoupled understanding losses. Most production VLMs live here.' },
+  'M2T:early': { head: 'Unified token stream from step zero.',
+                 examples: ['Qwen3.6', 'Nemotron3-Nano-Omni'],
+                 detail: 'All modalities share a single embedding space and one global learning rate; stabilizers (z-loss, QK-Norm) become preconditions for divergence-free training.' },
+  'M2G:mid':   { head: 'Pathway-specific generators with shared backbone.',
+                 examples: ['HunyuanVideo-1.5', 'Wan2.2', 'Seedream3.0'],
+                 detail: 'Frozen VAE/text encoder; RL gradients enter only the diffusion transformer. Reward locality matches pathway locality, keeping training tractable.' },
+  'M2G:early': { head: 'Native synthesis through a unified objective.',
+                 examples: ['Kling-Omni', 'OmniVoice', 'LTX-2.x'],
+                 detail: 'Synthesis bypasses post-hoc decoders. Modality-mixture scheduling becomes the dominant control knob; cross-modal AdaLN/CFG anchors AV sync.' },
+  'M2M:mid':   { head: 'Symmetric I/O with decoupled understanding & generation.',
+                 examples: ['BAGEL', 'Janus-Pro', 'Mamoda2.5'],
+                 detail: 'Two losses, two pathways, one shared backbone. Mixture-of-Transformer-Experts (MoT) hard-routes tokens to specialised understanding or generation experts.' },
+  'M2M:early': { head: 'Fully-unified discrete or hybrid AR-Diffusion.',
+                 examples: ['Chameleon', 'Emu3.5', 'AnyGPT', 'Transfusion'],
+                 detail: 'Pathway locality collapses; the policy must cover the full backbone. Failure modes (grounding hack, see-saw) co-emerge structurally; OPD is the response.' },
+};
+function taxonomyEntry(cat, fusion) {
+  return TAXONOMY[cat + ':' + fusion] || { head: '', examples: [], detail: '' };
+}
+
+// Sections data (filled inline above)
+document.addEventListener('alpine:init', () => {
+  Alpine.data('modelExplorer', () => ({
+    models: [], filtered: [],
+    query: '', cat: 'all', sortBy: 'date_desc',
+    modalities: [
+      { key:'in_text',   label:'In: Text'  },
+      { key:'in_image',  label:'In: Image' },
+      { key:'in_audio',  label:'In: Audio' },
+      { key:'in_video',  label:'In: Video' },
+      { key:'out_text',  label:'Out: Text' },
+      { key:'out_image', label:'Out: Image'},
+      { key:'out_audio', label:'Out: Audio'},
+      { key:'out_video', label:'Out: Video'},
+    ],
+    modalityFilter: {},
+    sections: window.__SECTIONS__,
+    async init() {
+      try {
+        const r = await fetch('data/models.json');
+        this.models = await r.json();
+      } catch (e) {
+        console.warn('Falling back to inline data', e);
+        this.models = window.__INLINE_MODELS__ || [];
+      }
+      this.applyFilter();
+      this.$watch('query',          () => this.applyFilter());
+      this.$watch('cat',            () => this.applyFilter());
+      this.$watch('sortBy',         () => this.applyFilter());
+      this.$watch('modalityFilter', () => this.applyFilter(), { deep:true });
+      // also init the timeline chart now that we have data
+      this.drawTimeline();
+    },
+    resetFilters() {
+      this.query = ''; this.cat = 'all'; this.sortBy='date_desc';
+      this.modalityFilter = {};
+    },
+    applyFilter() {
+      const q = (this.query||'').trim().toLowerCase();
+      let r = this.models.filter(m => {
+        if (this.cat !== 'all' && m.category !== this.cat) return false;
+        if (q && !m.name.toLowerCase().includes(q)) return false;
+        for (const [k,v] of Object.entries(this.modalityFilter)) {
+          if (!v) continue;
+          const [side, mod] = k.split('_');
+          if (!m[side] || !m[side][mod]) return false;
+        }
+        return true;
+      });
+      r.sort((a,b) => {
+        if (this.sortBy === 'date_desc') return b.date.localeCompare(a.date);
+        if (this.sortBy === 'date_asc')  return a.date.localeCompare(b.date);
+        if (this.sortBy === 'name')      return a.name.localeCompare(b.name);
+        return 0;
+      });
+      this.filtered = r;
+    },
+    drawTimeline() {
+      const buckets = {};
+      for (const m of this.models) {
+        const ym = m.date; // "YYYY.MM"
+        if (!buckets[ym]) buckets[ym] = { M2T:0, M2G:0, M2M:0 };
+        buckets[ym][m.category]++;
+      }
+      const labels = Object.keys(buckets).sort();
+      const ds = ['M2T','M2G','M2M'].map(c => ({
+        label: c,
+        data:  labels.map(l => buckets[l][c] || 0),
+        backgroundColor:
+          c==='M2T' ? 'rgba(59,130,246,.85)' :
+          c==='M2G' ? 'rgba(245,158,11,.85)' :
+                      'rgba(239,68,68,.85)',
+        stack: 'releases',
+        borderRadius: 3,
+      }));
+      const ctx = document.getElementById('timelineChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: ds },
+        options: {
+          responsive: true, maintainAspectRatio: true,
+          plugins: {
+            legend: { position:'bottom', labels:{ font:{ family:'Inter', size:12 }, color:'#475569' } },
+            tooltip: { backgroundColor:'#0f172a', titleFont:{family:'Inter'}, bodyFont:{family:'Inter'} },
+          },
+          scales: {
+            x: { stacked: true, ticks: { color:'#64748b', font:{family:'JetBrains Mono', size:10} }, grid:{ display:false } },
+            y: { stacked: true, ticks: { color:'#64748b', font:{family:'Inter', size:11} }, grid:{ color:'#f1f5f9' } },
+          },
+        },
+      });
+    },
+  }));
+});
+</script>
+
+</body>
+</html>
