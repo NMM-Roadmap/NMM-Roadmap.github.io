@@ -11,9 +11,8 @@
 <!-- Tailwind via CDN, no build step -->
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Alpine.js for reactivity -->
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<!-- Chart.js for the timeline chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- Inter font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,10 +61,21 @@
   .b-m2g { background:#fef3c7; color:#92400e; }
   .b-m2m { background:#fee2e2; color:#991b1b; }
   .b-disc { background:#f3e8ff; color:#6b21a8; }
+  /* paper-style table badges (filled solid + outlined-tinted) */
+  .db-badge { display:inline-block; padding: 3px 10px; border-radius: 4px; color:#fff;
+              font-weight:700; font-size: 0.72rem; letter-spacing: 0.02em; }
+  .db-tag   { display:inline-block; padding: 2px 8px; border-radius: 4px;
+              border: 1px solid var(--c, #64748b); color: var(--c, #64748b);
+              background: color-mix(in srgb, var(--c, #64748b) 12%, white);
+              font-weight: 600; font-size: 0.72rem; letter-spacing: 0.01em; }
   /* modality dot */
   .mdot { width: 0.55rem; height: 0.55rem; border-radius: 9999px; display:inline-block; }
   .mdot-on  { background: currentColor; opacity: 1; }
   .mdot-off { background: #e2e8f0; }
+  /* explicit dot color classes (avoid Tailwind CDN missing dynamic classes) */
+  .dot-m2t { color: #1d4ed8; }
+  .dot-m2g { color: #b45309; }
+  .dot-m2m { color: #b91c1c; }
   /* taxonomy cell hover */
   .tcell { transition: all .18s ease; }
   .tcell:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px rgba(15,23,42,.25); }
@@ -98,7 +108,6 @@
       <a href="#tldr"     class="hover:text-ink-900">TL;DR</a>
       <a href="#taxonomy" class="hover:text-ink-900">Taxonomy</a>
       <a href="#explorer" class="hover:text-ink-900">Model&nbsp;Explorer</a>
-      <a href="#timeline" class="hover:text-ink-900">Timeline</a>
       <div class="relative group">
         <a href="#sections" class="hover:text-ink-900 inline-flex items-center gap-1 py-3">
           Sections
@@ -111,6 +120,7 @@
                     group-hover:visible group-hover:opacity-100 group-hover:translate-y-0
                     transition duration-150 z-50">
           <div class="rounded-lg border border-ink-100 bg-white shadow-lg py-1.5">
+            <a href="#architecture" class="block px-4 py-2 text-sm text-ink-700 hover:bg-accent-50 hover:text-accent-700">Model Architecture</a>
             <a href="#training"   class="block px-4 py-2 text-sm text-ink-700 hover:bg-accent-50 hover:text-accent-700">Training Techniques</a>
             <a href="#data"       class="block px-4 py-2 text-sm text-ink-700 hover:bg-accent-50 hover:text-accent-700">Datasets</a>
             <a href="#inference"  class="block px-4 py-2 text-sm text-ink-700 hover:bg-accent-50 hover:text-accent-700">Inference &amp; Deployment</a>
@@ -149,7 +159,9 @@
 
     <!-- action buttons -->
     <div class="mt-8 flex flex-wrap items-center gap-3">
-      <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium hover:bg-ink-800 transition">
+      <a href="Youtu_Lab___Native_Multimodal_Modeling_Roadmap.pdf"
+         download="NMM-Roadmap.pdf"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium hover:bg-ink-800 transition">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
         Paper&nbsp;PDF
       </a>
@@ -222,9 +234,8 @@
        x-data="{ active: null }">
     <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Taxonomy</h2>
     <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">A two-axis map of NMM</h3>
-    <p class="mt-3 text-ink-600 max-w-3xl">
-      Click any cell to see representative models for that combination of fusion regime
-      and input&ndash;output duality.
+    <p class="mt-3 text-ink-600">
+      Click any cell to see representative models for that combination of fusion regime and input&ndash;output duality.
     </p>
 
     <div class="mt-8 overflow-x-auto scroll-smooth-x">
@@ -355,7 +366,6 @@
             <th class="text-left px-3 py-2.5">Params</th>
             <th class="text-center px-3 py-2.5">Input&nbsp;(T&middot;I&middot;A&middot;V)</th>
             <th class="text-center px-3 py-2.5">Output&nbsp;(T&middot;I&middot;A&middot;V)</th>
-            <th class="text-center px-3 py-2.5">Disc&nbsp;Unif.</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-ink-100">
@@ -371,7 +381,7 @@
               <td class="px-3 py-2.5 text-ink-600 font-mono text-xs" x-text="m.params"></td>
               <td class="px-3 py-2.5">
                 <div class="flex items-center justify-center gap-1.5"
-                     :class="{'text-m2t-700':m.category==='M2T','text-m2g-700':m.category==='M2G','text-m2m-700':m.category==='M2M'}">
+                     :class="m.category==='M2T'?'dot-m2t':m.category==='M2G'?'dot-m2g':'dot-m2m'">
                   <template x-for="k in ['text','image','audio','video']">
                     <span class="mdot" :class="m.input[k]?'mdot-on':'mdot-off'" :title="k"></span>
                   </template>
@@ -379,15 +389,11 @@
               </td>
               <td class="px-3 py-2.5">
                 <div class="flex items-center justify-center gap-1.5"
-                     :class="{'text-m2t-700':m.category==='M2T','text-m2g-700':m.category==='M2G','text-m2m-700':m.category==='M2M'}">
+                     :class="m.category==='M2T'?'dot-m2t':m.category==='M2G'?'dot-m2g':'dot-m2m'">
                   <template x-for="k in ['text','image','audio','video']">
                     <span class="mdot" :class="m.output[k]?'mdot-on':'mdot-off'" :title="k"></span>
                   </template>
                 </div>
-              </td>
-              <td class="px-3 py-2.5 text-center">
-                <span x-show="m.discrete_unified" class="badge b-disc">discrete</span>
-                <span x-show="!m.discrete_unified" class="text-ink-100">&middot;</span>
               </td>
             </tr>
           </template>
@@ -396,27 +402,8 @@
     </div>
 
     <p class="mt-3 text-xs text-ink-600">
-      Filled dots = supported modality. The
-      <span class="badge b-disc">discrete</span> tag marks models employing the
-      fully-discretized unified scheme.
+      Filled dots = supported modality.
     </p>
-  </div>
-</section>
-
-<!-- ============================================================== -->
-<!-- TIMELINE CHART                                                  -->
-<!-- ============================================================== -->
-<section id="timeline" class="border-b border-ink-100 bg-ink-50/40">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-    <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Timeline</h2>
-    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Release momentum across 2024&ndash;2026</h3>
-    <p class="mt-2 text-ink-600 max-w-3xl">
-      Native multimodal architectures have accelerated sharply since 2024, with M2M (symmetric) systems
-      catching up to the dominant M2T pipeline. Per-month counts of releases by category.
-    </p>
-    <div class="mt-6 rounded-xl border border-ink-100 bg-white p-4">
-      <canvas id="timelineChart" height="120"></canvas>
-    </div>
   </div>
 </section>
 
@@ -424,16 +411,52 @@
 <!-- SECTIONS OVERVIEW                                               -->
 <!-- ============================================================== -->
 <section id="sections" class="border-b border-ink-100 bg-white">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
     <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">Paper Outline</h2>
-    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Four pillars of the NMM roadmap</h3>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Five pillars of the NMM roadmap</h3>
 
-    <!-- =================== 1. Training =================== -->
-    <article id="training" class="mt-10 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
+    <!-- =================== 1. Model Architecture =================== -->
+    <article id="architecture" x-data="{open:false}" class="mt-10 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
+      <div class="p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="num-ring">1</span>
+          <h4 class="text-xl font-bold text-ink-900">Model Architecture</h4>
+        </div>
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+          NMM systems assign distinct functional roles to comprehend and generate different modalities.
+          The functional categories are defined by their <strong>input&ndash;output configurations</strong>
+          (M2T / M2G / M2M), orthogonal to the architectural taxonomy of <em>mid-fusion</em> vs.
+          <em>early-fusion</em>; each category contains representatives of both fusion paradigms.
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-4xl">
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2T &mdash; Unimodal Generation.</strong> Image/Audio/Video comprehension via modality unification, multi-image reasoning, multi-scale encoding, and perception-reasoning decoupling (Llama-4, Kimi K2.5, Qwen3-VL, GLM-5V-Turbo).</span></li>
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2G &mdash; Scenario-based Generation.</strong> High-fidelity image generation, low-latency audio synthesis with streaming synergy, and video generation with audio&ndash;visual alignment via unified timelines (MiniCPM-o 4.5, Qwen3-Omni).</span></li>
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>M2M &mdash; Symmetric Modeling.</strong> Two competing routes: <em>fully-discretized unified</em> (loss from discretizing, competition-driven latency) vs. <em>modality-specificity preserving</em> (comprehension&ndash;generation dilemma, bridging AR and Diffusion).</span></li>
+        </ul>
+        <button @click="open = !open"
+                class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium text-ink-800 hover:bg-ink-50 transition">
+          <svg class="w-4 h-4 transition" :class="open ? 'rotate-180':''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+          <span x-text="open ? 'Hide architecture figure' : 'Show architecture figure (M2T / M2G / M2M)'"></span>
+        </button>
+      </div>
+      <div x-show="open" x-collapse class="border-t border-ink-100 bg-ink-50/40 p-6 sm:p-8">
+        <img src="figures/architecture.png"
+             alt="Illustrative examples of three primary NMM architectures (M2T / M2G / M2M)"
+             class="w-full h-auto max-w-5xl mx-auto rounded-lg shadow-sm bg-white" loading="lazy" />
+        <p class="mt-3 text-[11.5px] text-ink-600 italic text-center">
+          Figure: Illustrative examples of three primary NMM architectures considering input&ndash;output duality.
+        </p>
+      </div>
+    </article>
+
+    <!-- =================== 2. Training =================== -->
+    <article id="training" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
       <div class="grid md:grid-cols-[1.15fr_1fr]">
         <div class="p-6 sm:p-8">
           <div class="flex items-center gap-3">
-            <span class="num-ring">1</span>
+            <span class="num-ring">2</span>
             <h4 class="text-xl font-bold text-ink-900">Training Techniques</h4>
           </div>
           <p class="mt-4 text-sm text-ink-700 leading-relaxed">
@@ -457,248 +480,406 @@
     </article>
 
     <!-- =================== 2. Datasets =================== -->
-    <article id="data" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
-      <div class="grid md:grid-cols-[1fr_1.15fr]">
-        <div class="bg-ink-50/60 order-2 md:order-1 border-t md:border-t-0 md:border-r border-ink-100 p-6 flex items-center justify-center">
-          <!-- Inline SVG: 4-axis data taxonomy -->
-          <svg viewBox="0 0 360 280" class="w-full h-auto max-h-[300px]" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .lbl{font:600 11px Inter,system-ui,sans-serif;}
-                .sub{font:500 9px JetBrains Mono,monospace;fill:#475569;}
-                .center{font:700 12px Inter,system-ui,sans-serif;fill:#0f172a;}
-              </style>
-            </defs>
-            <!-- center -->
-            <circle cx="180" cy="140" r="42" fill="#fff" stroke="#0f172a" stroke-width="1.5"/>
-            <text x="180" y="136" text-anchor="middle" class="center">NMM</text>
-            <text x="180" y="152" text-anchor="middle" class="sub">Data</text>
-            <!-- 4 quadrant cards -->
-            <g>
-              <rect x="20" y="20" width="130" height="70" rx="10" fill="#dbeafe" stroke="#2E86C1" stroke-width="1.2"/>
-              <text x="35" y="45" class="lbl" fill="#1e40af">Understand</text>
-              <text x="35" y="62" class="sub">Image-Text · VQA</text>
-              <text x="35" y="76" class="sub">OCR · Doc · Grounding</text>
-              <line x1="115" y1="90" x2="160" y2="120" stroke="#2E86C1" stroke-width="1.2"/>
-            </g>
-            <g>
-              <rect x="210" y="20" width="130" height="70" rx="10" fill="#dcfce7" stroke="#16A34A" stroke-width="1.2"/>
-              <text x="225" y="45" class="lbl" fill="#15803d">Generate</text>
-              <text x="225" y="62" class="sub">T2I · T2V · Speech</text>
-              <text x="225" y="76" class="sub">Edit · Interleaved</text>
-              <line x1="220" y1="90" x2="200" y2="120" stroke="#16A34A" stroke-width="1.2"/>
-            </g>
-            <g>
-              <rect x="20" y="190" width="130" height="70" rx="10" fill="#fef3c7" stroke="#CA8A04" stroke-width="1.2"/>
-              <text x="35" y="215" class="lbl" fill="#a16207">Interact</text>
-              <text x="35" y="232" class="sub">Agentic · GUI</text>
-              <text x="35" y="246" class="sub">Tool-use · Embodied</text>
-              <line x1="115" y1="190" x2="160" y2="160" stroke="#CA8A04" stroke-width="1.2"/>
-            </g>
-            <g>
-              <rect x="210" y="190" width="130" height="70" rx="10" fill="#ede9fe" stroke="#8B5CF6" stroke-width="1.2"/>
-              <text x="225" y="215" class="lbl" fill="#6d28d9">Preference</text>
-              <text x="225" y="232" class="sub">RLHF · DPO</text>
-              <text x="225" y="246" class="sub">Process Reward</text>
-              <line x1="220" y1="190" x2="200" y2="160" stroke="#8B5CF6" stroke-width="1.2"/>
-            </g>
+    <article id="data" x-data="{open:false}" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
+      <div class="p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="num-ring">3</span>
+          <h4 class="text-xl font-bold text-ink-900">Datasets</h4>
+        </div>
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+          Native multimodal data spans heterogeneous mixtures across text, image, video, audio,
+          documents, GUI states, tool-use traces, and preference signals. We organize them by
+          <strong>functional role</strong> &mdash; <em>Understand</em>, <em>Generate</em>,
+          <em>Interact</em>, <em>Align</em> &mdash; layered across PT &rarr; SFT &rarr; RL.
+        </p>
+        <button @click="open = !open"
+                class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium text-ink-800 hover:bg-ink-50 transition">
+          <svg class="w-4 h-4 transition" :class="open ? 'rotate-180':''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
-        </div>
-        <div class="p-6 sm:p-8 order-1 md:order-2">
-          <div class="flex items-center gap-3">
-            <span class="num-ring">2</span>
-            <h4 class="text-xl font-bold text-ink-900">Datasets</h4>
-          </div>
-          <p class="mt-4 text-sm text-ink-700 leading-relaxed">
-            Native multimodal data spans heterogeneous mixtures across <em>text, image, video, audio,
-            documents, GUI states, tool-use traces, and preference signals</em>. We organize them by
-            <strong>functional role</strong> rather than by modality alone, layered across PT &rarr; SFT &rarr; RL.
-          </p>
-          <div class="mt-4 grid grid-cols-2 gap-2 text-xs">
-            <div class="rounded-lg bg-blue-50 border border-blue-200 px-3 py-2">
-              <div class="font-semibold text-blue-700">Understanding</div>
-              <div class="text-ink-600 mt-0.5">LAION-5B, COCO, MMMU, ChartQA, OCR…</div>
-            </div>
-            <div class="rounded-lg bg-green-50 border border-green-200 px-3 py-2">
-              <div class="font-semibold text-green-700">Generation</div>
-              <div class="text-ink-600 mt-0.5">JourneyDB, OpenVid-1M, WebVid-10M…</div>
-            </div>
-            <div class="rounded-lg bg-yellow-50 border border-yellow-200 px-3 py-2">
-              <div class="font-semibold text-yellow-700">Interaction</div>
-              <div class="text-ink-600 mt-0.5">GUI traces, agentic dialogues, tool calls.</div>
-            </div>
-            <div class="rounded-lg bg-purple-50 border border-purple-200 px-3 py-2">
-              <div class="font-semibold text-purple-700">Preference</div>
-              <div class="text-ink-600 mt-0.5">RLHF-V, mDPO, HA-DPO process labels.</div>
-            </div>
-          </div>
-        </div>
+          <span x-text="open ? 'Hide full dataset table' : 'Show full dataset table (17 sub-types)'"></span>
+        </button>
       </div>
+      <!-- Reproduction of paper Table 1 -->
+      <div x-show="open" x-collapse class="border-t border-ink-100 overflow-x-auto scroll-smooth-x">
+        <table class="w-full min-w-[820px] text-[12.5px] leading-snug">
+          <thead class="bg-ink-50 text-ink-700 text-[11px] uppercase tracking-wider">
+            <tr>
+              <th class="text-left px-3 py-2 w-[110px]">Category</th>
+              <th class="text-left px-3 py-2 w-[170px]">Sub-type</th>
+              <th class="text-left px-3 py-2">Representative Datasets</th>
+              <th class="text-left px-3 py-2 w-[110px]">Modalities</th>
+              <th class="text-left px-3 py-2">Key Supervision / Description</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100">
+            <!-- ============ Understand ============ -->
+            <tr style="background:#F4F9FD;">
+              <td rowspan="5" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#2E86C1">Understand</span>
+              </td>
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Image-Text Alignment</span></td>
+              <td class="px-3 py-2 align-top">LAION-5B, COCO Captions, CC3M/CC12M, YFCC100M, DataComp</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Weakly-aligned web-scale pairs for cross-modal mapping; image-level semantics.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">VQA &amp; Instruction Tuning</span></td>
+              <td class="px-3 py-2 align-top">VQA v2, GQA, OK-VQA, ScienceQA, LLaVA-Instruct, InstructBLIP</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Task-driven QA and multi-turn instruction-following; perception &rarr; dialogue.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Interleaved &amp; Multi-Image</span></td>
+              <td class="px-3 py-2 align-top">MMC4, OBELICS, OmniCorpus, MANTIS, NLVR2, MuirBench, BLINK</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Interleaved documents and multi-image reasoning; long-range dependency.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Document, Chart &amp; Grounding</span></td>
+              <td class="px-3 py-2 align-top">DocVQA, InfographicVQA, ChartQA, TextVQA, Flickr30k Entities, RefCOCO</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Text, layouts, charts; region-level boxes and referring expressions.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Video &amp; Audio Understanding</span></td>
+              <td class="px-3 py-2 align-top">MSR-VTT, ActivityNet, WebVid, AudioSet, LibriSpeech, Common Voice, Clotho</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I, V, A</td>
+              <td class="px-3 py-2 align-top text-ink-700">Temporal action/event recognition, ASR, acoustic scene understanding.</td>
+            </tr>
+
+            <!-- ============ Generate ============ -->
+            <tr style="background:#EAF7EE;">
+              <td rowspan="5" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#16A34A">Generate</span>
+              </td>
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Text-to-Image &amp; Editing</span></td>
+              <td class="px-3 py-2 align-top">LAION-5B, DiffusionDB, InstructPix2Pix, MagicBrush, HQ-Edit, UltraEdit</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Synthesis or editing from prompts; controlled transformation with masks.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Controllable Generation</span></td>
+              <td class="px-3 py-2 align-top">ControlNet, GLIGEN, T2I-Adapter, Composer</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I + cond.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Grounded generation with depth, sketch, layout, bounding boxes, pose.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Interleaved Image-Text Gen.</span></td>
+              <td class="px-3 py-2 align-top">VIST, OpenLEAF, CoMM, InterSyn</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Coherent multimodal sequences (stories, tutorials) with entity consistency.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Video Generation</span></td>
+              <td class="px-3 py-2 align-top">WebVid-10M, Panda-70M, OpenVid-1M, VidGen-1M</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I, V</td>
+              <td class="px-3 py-2 align-top text-ink-700">T2V/I2V; temporal coherence, motion quality, caption recaptioning.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Audio &amp; Speech Generation</span></td>
+              <td class="px-3 py-2 align-top">LibriTTS, VCTK, GigaSpeech, Emilia, AudioCaps, WavCaps, MusicCaps</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, A&nbsp;(Sp)</td>
+              <td class="px-3 py-2 align-top text-ink-700">TTS, voice cloning, music and environmental sound generation.</td>
+            </tr>
+
+            <!-- ============ Interact ============ -->
+            <tr style="background:#FBF5E6;">
+              <td rowspan="3" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#CA8A04">Interact</span>
+              </td>
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Web Interaction</span></td>
+              <td class="px-3 py-2 align-top">WebShop, Mind2Web, WebArena, VisualWebArena, WebLINX, WebVoyager</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I&nbsp;(GUI)</td>
+              <td class="px-3 py-2 align-top text-ink-700">Goal-driven web navigation: search, click, form fill on real/sim sites.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Mobile &amp; Desktop GUI</span></td>
+              <td class="px-3 py-2 align-top">AITW, RICO, ScreenAI, SeeClick, OSWorld, Windows Agent Arena</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I&nbsp;(GUI)</td>
+              <td class="px-3 py-2 align-top text-ink-700">Screenshot/UI-tree to action; mobile and OS environments.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Embodied Interaction</span></td>
+              <td class="px-3 py-2 align-top">ALFWorld, BridgeData V2, Open X-Embodiment, Magma</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I, V&nbsp;(robot)</td>
+              <td class="px-3 py-2 align-top text-ink-700">Language-conditioned manipulation from visual + robot states.</td>
+            </tr>
+
+            <!-- ============ Align ============ -->
+            <tr style="background:#F5F3FF;">
+              <td rowspan="4" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#8B5CF6">Align</span>
+              </td>
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#8B5CF6">Hallucination &amp; Faithfulness</span></td>
+              <td class="px-3 py-2 align-top">LLaVA-RLHF, RLHF-V, VLFeedback, RLAIF-V, HA-DPO, V-DPO</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Comparative / span-level feedback to reduce hallucinations.</td>
+            </tr>
+            <tr style="background:#F5F3FF;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#8B5CF6">Safety Alignment</span></td>
+              <td class="px-3 py-2 align-top">SPA-VL, Safe RLHF-V</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I</td>
+              <td class="px-3 py-2 align-top text-ink-700">Safe/unsafe response pairs under multimodal harmful prompts.</td>
+            </tr>
+            <tr style="background:#F5F3FF;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#8B5CF6">Generation Quality Pref.</span></td>
+              <td class="px-3 py-2 align-top">ImageReward, Pick-a-Pic, HPS v2, VBench, VBench++</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">I, V</td>
+              <td class="px-3 py-2 align-top text-ink-700">Aesthetics, alignment, temporal consistency, motion quality.</td>
+            </tr>
+            <tr style="background:#F5F3FF;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#8B5CF6">Agentic Preference</span></td>
+              <td class="px-3 py-2 align-top">Environment Rewards, Human Demos</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">T, I, A</td>
+              <td class="px-3 py-2 align-top text-ink-700">Env-aligned action correctness, efficiency, recovery.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p x-show="open" x-collapse class="px-6 sm:px-8 py-3 text-[11.5px] text-ink-600 italic border-t border-ink-100 bg-white">
+        Modalities: T = Text, I = Image, V = Video, A = Audio/Speech.
+      </p>
     </article>
 
     <!-- =================== 3. Inference & Deployment =================== -->
     <article id="inference" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
-      <div class="grid md:grid-cols-[1.15fr_1fr]">
-        <div class="p-6 sm:p-8">
-          <div class="flex items-center gap-3">
-            <span class="num-ring">3</span>
-            <h4 class="text-xl font-bold text-ink-900">Inference &amp; Deployment</h4>
-          </div>
-          <p class="mt-4 text-sm text-ink-700 leading-relaxed">
-            Native pretraining amplifies the long-context problem: a single high-resolution image, document,
-            or long video balloons into thousands or millions of tokens. Efficient serving therefore attacks
-            <strong>sequence explosion</strong>, the <strong>heterogeneity-scale tension</strong>, and
-            <strong>full-duplex streaming</strong> simultaneously.
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-ink-600">
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Visual resampling, dynamic resolution, and spatially sparse perception (VisionZip, SparseVLM, FitPrune).</span></li>
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Pure discrete tokenization vs. MoE / hybrid routing trade-offs.</span></li>
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Full-duplex state management, adaptive-bitrate control, modality-aware mixed quantization.</span></li>
-          </ul>
+      <div class="p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="num-ring">4</span>
+          <h4 class="text-xl font-bold text-ink-900">Inference &amp; Deployment</h4>
         </div>
-        <div class="bg-ink-50/60 border-t md:border-t-0 md:border-l border-ink-100 p-6 flex items-center justify-center">
-          <!-- Inline SVG: token compression pipeline -->
-          <svg viewBox="0 0 380 260" class="w-full h-auto max-h-[280px]" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .ttl{font:600 11px Inter,system-ui,sans-serif;}
-                .nm{font:500 10px JetBrains Mono,monospace;fill:#334155;}
-              </style>
-            </defs>
-            <!-- input grid (dense tokens) -->
-            <text x="20" y="22" class="ttl" fill="#0f172a">Dense visual tokens</text>
-            <g>
-              <!-- 8x4 grid -->
-            </g>
-            <g fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.6">
-              <rect x="20"  y="32" width="14" height="14"/><rect x="36"  y="32" width="14" height="14"/>
-              <rect x="52"  y="32" width="14" height="14"/><rect x="68"  y="32" width="14" height="14"/>
-              <rect x="84"  y="32" width="14" height="14"/><rect x="100" y="32" width="14" height="14"/>
-              <rect x="116" y="32" width="14" height="14"/><rect x="132" y="32" width="14" height="14"/>
-              <rect x="20"  y="48" width="14" height="14"/><rect x="36"  y="48" width="14" height="14"/>
-              <rect x="52"  y="48" width="14" height="14"/><rect x="68"  y="48" width="14" height="14"/>
-              <rect x="84"  y="48" width="14" height="14"/><rect x="100" y="48" width="14" height="14"/>
-              <rect x="116" y="48" width="14" height="14"/><rect x="132" y="48" width="14" height="14"/>
-              <rect x="20"  y="64" width="14" height="14"/><rect x="36"  y="64" width="14" height="14"/>
-              <rect x="52"  y="64" width="14" height="14"/><rect x="68"  y="64" width="14" height="14"/>
-              <rect x="84"  y="64" width="14" height="14"/><rect x="100" y="64" width="14" height="14"/>
-              <rect x="116" y="64" width="14" height="14"/><rect x="132" y="64" width="14" height="14"/>
-              <rect x="20"  y="80" width="14" height="14"/><rect x="36"  y="80" width="14" height="14"/>
-              <rect x="52"  y="80" width="14" height="14"/><rect x="68"  y="80" width="14" height="14"/>
-              <rect x="84"  y="80" width="14" height="14"/><rect x="100" y="80" width="14" height="14"/>
-              <rect x="116" y="80" width="14" height="14"/><rect x="132" y="80" width="14" height="14"/>
-            </g>
-            <!-- arrow + compressor -->
-            <path d="M158 65 L188 65" stroke="#0f172a" stroke-width="1.4" marker-end="url(#ar)"/>
-            <defs>
-              <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
-              </marker>
-            </defs>
-            <rect x="190" y="40" width="80" height="50" rx="8" fill="#0f172a"/>
-            <text x="230" y="62" text-anchor="middle" class="ttl" fill="#fff">Resample</text>
-            <text x="230" y="78" text-anchor="middle" class="nm" fill="#cbd5e1">/Prune/Pool</text>
-            <path d="M272 65 L302 65" stroke="#0f172a" stroke-width="1.4" marker-end="url(#ar)"/>
-            <!-- compact tokens -->
-            <text x="306" y="22" class="ttl" fill="#0f172a">Compact</text>
-            <g fill="#84cc16" stroke="#65a30d" stroke-width="0.6">
-              <rect x="306" y="50" width="14" height="14"/><rect x="322" y="50" width="14" height="14"/>
-              <rect x="338" y="50" width="14" height="14"/>
-              <rect x="306" y="66" width="14" height="14"/><rect x="322" y="66" width="14" height="14"/>
-              <rect x="338" y="66" width="14" height="14"/>
-            </g>
-            <!-- backbone -->
-            <rect x="20" y="130" width="340" height="56" rx="10" fill="#fef9c3" stroke="#eab308" stroke-width="1.2"/>
-            <text x="190" y="152" text-anchor="middle" class="ttl" fill="#713f12">Shared multimodal backbone</text>
-            <text x="190" y="170" text-anchor="middle" class="nm" fill="#854d0e">MoE routing · long-context KV cache · streaming KV mgmt</text>
-            <!-- output streams -->
-            <rect x="20"  y="206" width="100" height="38" rx="8" fill="#dbeafe" stroke="#2E86C1"/>
-            <text x="70"  y="222" text-anchor="middle" class="ttl" fill="#1e40af">Text stream</text>
-            <text x="70"  y="236" text-anchor="middle" class="nm">low-latency</text>
-            <rect x="140" y="206" width="100" height="38" rx="8" fill="#dcfce7" stroke="#16A34A"/>
-            <text x="190" y="222" text-anchor="middle" class="ttl" fill="#15803d">Speech stream</text>
-            <text x="190" y="236" text-anchor="middle" class="nm">full-duplex</text>
-            <rect x="260" y="206" width="100" height="38" rx="8" fill="#ede9fe" stroke="#8B5CF6"/>
-            <text x="310" y="222" text-anchor="middle" class="ttl" fill="#6d28d9">Image / Video</text>
-            <text x="310" y="236" text-anchor="middle" class="nm">adaptive bitrate</text>
-            <line x1="70"  y1="186" x2="70"  y2="206" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="190" y1="186" x2="190" y2="206" stroke="#94a3b8" stroke-width="1"/>
-            <line x1="310" y1="186" x2="310" y2="206" stroke="#94a3b8" stroke-width="1"/>
-          </svg>
-        </div>
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+          Native pretraining amplifies the long-context problem: a single high-resolution image, document,
+          or long video balloons into thousands or millions of tokens. Efficient serving therefore attacks
+          <strong>sequence explosion</strong>, the <strong>heterogeneity-scale tension</strong>, and
+          <strong>full-duplex streaming</strong> simultaneously.
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-ink-600 max-w-4xl">
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Visual resampling, dynamic resolution, and spatially sparse perception (VisionZip, SparseVLM, FitPrune).</span></li>
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Pure discrete tokenization vs. MoE / hybrid routing trade-offs.</span></li>
+          <li class="flex gap-2"><span class="text-accent-700">▸</span><span>Full-duplex state management, adaptive-bitrate control, modality-aware mixed quantization.</span></li>
+        </ul>
       </div>
     </article>
 
     <!-- =================== 4. Evaluation =================== -->
-    <article id="evaluation" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
-      <div class="grid md:grid-cols-[1fr_1.15fr]">
-        <div class="bg-ink-50/60 order-2 md:order-1 border-t md:border-t-0 md:border-r border-ink-100 p-6 flex items-center justify-center">
-          <!-- Inline SVG: 3x2 evaluation matrix -->
-          <svg viewBox="0 0 360 260" class="w-full h-auto max-h-[300px]" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .h{font:600 11px Inter,system-ui,sans-serif;fill:#0f172a;}
-                .c{font:500 9.5px JetBrains Mono,monospace;fill:#334155;}
-                .m{font:600 10px Inter,system-ui,sans-serif;}
-              </style>
-            </defs>
-            <!-- header row -->
-            <text x="180" y="20" text-anchor="middle" class="h">Understanding × Generation</text>
-            <text x="120" y="46" text-anchor="middle" class="m" fill="#475569">Understanding</text>
-            <text x="270" y="46" text-anchor="middle" class="m" fill="#475569">Generation</text>
-            <!-- Image row -->
-            <rect x="10"  y="58" width="80"  height="56" rx="8" fill="#dbeafe" stroke="#2E86C1"/>
-            <text x="50"  y="78"  text-anchor="middle" class="h" fill="#1e40af">Image</text>
-            <rect x="100" y="58" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="160" y="76" text-anchor="middle" class="c">MMBench · MMMU</text>
-            <text x="160" y="90" text-anchor="middle" class="c">MathVista · POPE</text>
-            <text x="160" y="104" text-anchor="middle" class="c">DocVQA · OCRBench</text>
-            <rect x="230" y="58" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="290" y="76" text-anchor="middle" class="c">GenEval · DPG</text>
-            <text x="290" y="90" text-anchor="middle" class="c">T2I-CompBench</text>
-            <text x="290" y="104" text-anchor="middle" class="c">FID · CLIPScore</text>
-            <!-- Audio row -->
-            <rect x="10"  y="120" width="80"  height="56" rx="8" fill="#fef3c7" stroke="#CA8A04"/>
-            <text x="50"  y="140" text-anchor="middle" class="h" fill="#a16207">Audio</text>
-            <rect x="100" y="120" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="160" y="138" text-anchor="middle" class="c">LibriSpeech</text>
-            <text x="160" y="152" text-anchor="middle" class="c">FLEURS · MMAU</text>
-            <text x="160" y="166" text-anchor="middle" class="c">Full-duplex bench</text>
-            <rect x="230" y="120" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="290" y="138" text-anchor="middle" class="c">TTS MOS</text>
-            <text x="290" y="152" text-anchor="middle" class="c">Speech-WER</text>
-            <text x="290" y="166" text-anchor="middle" class="c">Voice-Bench</text>
-            <!-- Video row -->
-            <rect x="10"  y="182" width="80"  height="56" rx="8" fill="#dcfce7" stroke="#16A34A"/>
-            <text x="50"  y="202" text-anchor="middle" class="h" fill="#15803d">Video</text>
-            <rect x="100" y="182" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="160" y="200" text-anchor="middle" class="c">Video-MME</text>
-            <text x="160" y="214" text-anchor="middle" class="c">MVBench · TempCom.</text>
-            <text x="160" y="228" text-anchor="middle" class="c">EgoSchema</text>
-            <rect x="230" y="182" width="120" height="56" rx="8" fill="#fff" stroke="#cbd5e1"/>
-            <text x="290" y="200" text-anchor="middle" class="c">VBench</text>
-            <text x="290" y="214" text-anchor="middle" class="c">VideoPhy</text>
-            <text x="290" y="228" text-anchor="middle" class="c">A-V Sync</text>
+    <article id="evaluation" x-data="{open:false}" class="mt-6 rounded-2xl border border-ink-100 overflow-hidden scroll-mt-20">
+      <div class="p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="num-ring">5</span>
+          <h4 class="text-xl font-bold text-ink-900">Evaluation</h4>
+        </div>
+        <p class="mt-4 text-sm text-ink-700 leading-relaxed max-w-4xl">
+          Native architectures demand evaluation that simultaneously verifies
+          <em>understanding</em> (perception, reasoning, grounding) and <em>generation</em>
+          (synthesis, editing, controllability) without one-sided regression. We organize
+          benchmarks by modality &mdash; <strong>Image</strong> / <strong>Audio</strong> /
+          <strong>Video</strong> &mdash; and within each split understanding from generation.
+        </p>
+        <button @click="open = !open"
+                class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium text-ink-800 hover:bg-ink-50 transition">
+          <svg class="w-4 h-4 transition" :class="open ? 'rotate-180':''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
-        </div>
-        <div class="p-6 sm:p-8 order-1 md:order-2">
-          <div class="flex items-center gap-3">
-            <span class="num-ring">4</span>
-            <h4 class="text-xl font-bold text-ink-900">Evaluation</h4>
-          </div>
-          <p class="mt-4 text-sm text-ink-700 leading-relaxed">
-            Native architectures demand evaluation that simultaneously verifies
-            <em>understanding</em> (perception, reasoning, grounding) and <em>generation</em>
-            (synthesis, editing, controllability) without one-sided regression. We organize
-            benchmarks by modality (image / audio / video) and within each split understanding from
-            generation.
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-ink-600">
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>Image</strong>: MMBench, MMMU, MathVista, GenEval, T2I-CompBench, ImageReward.</span></li>
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>Audio</strong>: LibriSpeech, FLEURS, MMAU; full-duplex interaction benchmarks.</span></li>
-            <li class="flex gap-2"><span class="text-accent-700">▸</span><span><strong>Video</strong>: VBench, Video-MME, VideoPhy, audio–visual sync.</span></li>
-          </ul>
-        </div>
+          <span x-text="open ? 'Hide full benchmark table' : 'Show full benchmark table (31 benchmarks)'"></span>
+        </button>
+      </div>
+      <!-- Reproduction of paper Table 2 -->
+      <div x-show="open" x-collapse class="border-t border-ink-100 overflow-x-auto scroll-smooth-x">
+        <table class="w-full min-w-[820px] text-[12.5px] leading-snug">
+          <thead class="bg-ink-50 text-ink-700 text-[11px] uppercase tracking-wider">
+            <tr>
+              <th class="text-left px-3 py-2 w-[90px]">Modality</th>
+              <th class="text-left px-3 py-2 w-[180px]">Task Group</th>
+              <th class="text-left px-3 py-2 w-[180px]">Benchmark</th>
+              <th class="text-left px-3 py-2 w-[110px]">Metric</th>
+              <th class="text-left px-3 py-2">Key Characteristics</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100">
+            <!-- ============ Image ============ -->
+            <tr style="background:#F4F9FD;">
+              <td rowspan="14" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#2E86C1">Image</span>
+              </td>
+              <td rowspan="5" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">General Perception</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">VQAv2</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Open-ended VQA with balanced answer distribution.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">GQA</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Compositional questions grounded on scene graphs.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">SEED-Bench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">12 evaluation dims across spatial &amp; temporal reasoning.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MMBench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Bilingual multi-choice with circular evaluation.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MMStar</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Vision-indispensable, leakage-controlled selection.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td rowspan="2" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Knowledge Reasoning</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MMMU</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">College-level reasoning over 30 disciplines.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MathVista</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Mathematical reasoning grounded in visual contexts.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td rowspan="2" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Hallucination</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">POPE</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">F1</td>
+              <td class="px-3 py-2 align-top text-ink-700">Polling-based binary probing of object hallucination.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">RLHF-V</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Hall. Score</td>
+              <td class="px-3 py-2 align-top text-ink-700">Segment-level fine-grained hallucination evaluation.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td rowspan="4" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Document &amp; OCR</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">DocVQA</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">ANLS</td>
+              <td class="px-3 py-2 align-top text-ink-700">Question answering on document images.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">ChartQA</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Visual and logical reasoning over charts and plots.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">InfoVQA</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">ANLS</td>
+              <td class="px-3 py-2 align-top text-ink-700">Multi-hop reasoning over infographic layouts.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">OCRBench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Comprehensive OCR perception across 29 sub-tasks.</td>
+            </tr>
+            <tr style="background:#F4F9FD;">
+              <td rowspan="1" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#2E86C1">Generation</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">GenEval / DPG-Bench / T2I-CompBench / FID</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Comp. / Align. / Multi / Distrib.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Attribute binding, dense prompts, compositional T2I, distributional FID.</td>
+            </tr>
+
+            <!-- ============ Audio ============ -->
+            <tr style="background:#FBF5E6;">
+              <td rowspan="6" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#CA8A04">Audio</span>
+              </td>
+              <td rowspan="3" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Speech Recognition</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">LibriSpeech</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">WER</td>
+              <td class="px-3 py-2 align-top text-ink-700">Read English speech, clean and other splits.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">CommonVoice</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">WER</td>
+              <td class="px-3 py-2 align-top text-ink-700">Crowdsourced multilingual ASR across diverse accents.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">FLEURS</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">WER</td>
+              <td class="px-3 py-2 align-top text-ink-700">Few-shot ASR across 102 languages.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Speech Synthesis</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MOS-Bench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">MOS</td>
+              <td class="px-3 py-2 align-top text-ink-700">Subjective rating of naturalness and prosody.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td rowspan="2" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#CA8A04">Full-Duplex Interaction</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">Moshi Eval</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Latency</td>
+              <td class="px-3 py-2 align-top text-ink-700">Real-time full-duplex with 200&nbsp;ms target latency.</td>
+            </tr>
+            <tr style="background:#FBF5E6;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">Full-Duplex-Bench / SoulX-Duplug-Eval</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Multi / Lat.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Turn-taking, barge-in handling, false-interruption rate.</td>
+            </tr>
+
+            <!-- ============ Video ============ -->
+            <tr style="background:#EAF7EE;">
+              <td rowspan="11" class="px-3 py-2 align-top">
+                <span class="db-badge" style="background:#16A34A">Video</span>
+              </td>
+              <td rowspan="6" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Offline Understanding</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">VideoMME</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">General video QA spanning short to long durations.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">EgoSchema</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Long-form egocentric video QA with temporal reasoning.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MVBench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">20 fine-grained temporal tasks.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">PerceptionTest</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Multimodal perception and causal-reasoning skill probe.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">LongVideoBench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Hour-long referring and reasoning over long contexts.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">MLVU</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Multi-task long-video understanding.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td rowspan="3" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Streaming Understanding</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">OVO-Bench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Multi</td>
+              <td class="px-3 py-2 align-top text-ink-700">Online perception with backward tracing of past events.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">StreamingBench</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Acc./Lat.</td>
+              <td class="px-3 py-2 align-top text-ink-700">Video comprehension under latency constraints.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">OmniMMI</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Multi</td>
+              <td class="px-3 py-2 align-top text-ink-700">Multimodal streaming interaction evaluation.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td rowspan="2" class="px-3 py-2 align-top"><span class="db-tag" style="--c:#16A34A">Generation</span></td>
+              <td class="px-3 py-2 align-top font-medium text-ink-900">UCF-101 / Kinetics-600</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">FVD</td>
+              <td class="px-3 py-2 align-top text-ink-700">Action-class video generation distributional metric.</td>
+            </tr>
+            <tr style="background:#EAF7EE;">
+              <td class="px-3 py-2 align-top font-medium text-ink-900">VBench / SeedVideoBench&nbsp;2.0 / Arena.AI</td>
+              <td class="px-3 py-2 align-top font-mono text-[11.5px]">Multi / 6-dim / Elo</td>
+              <td class="px-3 py-2 align-top text-ink-700">Temporal consistency, A/V sync, community Elo ranking.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </article>
   </div>
@@ -809,8 +990,6 @@ document.addEventListener('alpine:init', () => {
       this.$watch('cat',            () => this.applyFilter());
       this.$watch('sortBy',         () => this.applyFilter());
       this.$watch('modalityFilter', () => this.applyFilter(), { deep:true });
-      // also init the timeline chart now that we have data
-      this.drawTimeline();
     },
     resetFilters() {
       this.query = ''; this.cat = 'all'; this.sortBy='date_desc';
@@ -823,7 +1002,8 @@ document.addEventListener('alpine:init', () => {
         if (q && !m.name.toLowerCase().includes(q)) return false;
         for (const [k,v] of Object.entries(this.modalityFilter)) {
           if (!v) continue;
-          const [side, mod] = k.split('_');
+          const [prefix, mod] = k.split('_');
+          const side = prefix === 'in' ? 'input' : 'output';
           if (!m[side] || !m[side][mod]) return false;
         }
         return true;
@@ -835,41 +1015,6 @@ document.addEventListener('alpine:init', () => {
         return 0;
       });
       this.filtered = r;
-    },
-    drawTimeline() {
-      const buckets = {};
-      for (const m of this.models) {
-        const ym = m.date; // "YYYY.MM"
-        if (!buckets[ym]) buckets[ym] = { M2T:0, M2G:0, M2M:0 };
-        buckets[ym][m.category]++;
-      }
-      const labels = Object.keys(buckets).sort();
-      const ds = ['M2T','M2G','M2M'].map(c => ({
-        label: c,
-        data:  labels.map(l => buckets[l][c] || 0),
-        backgroundColor:
-          c==='M2T' ? 'rgba(59,130,246,.85)' :
-          c==='M2G' ? 'rgba(245,158,11,.85)' :
-                      'rgba(239,68,68,.85)',
-        stack: 'releases',
-        borderRadius: 3,
-      }));
-      const ctx = document.getElementById('timelineChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: { labels, datasets: ds },
-        options: {
-          responsive: true, maintainAspectRatio: true,
-          plugins: {
-            legend: { position:'bottom', labels:{ font:{ family:'Inter', size:12 }, color:'#475569' } },
-            tooltip: { backgroundColor:'#0f172a', titleFont:{family:'Inter'}, bodyFont:{family:'Inter'} },
-          },
-          scales: {
-            x: { stacked: true, ticks: { color:'#64748b', font:{family:'JetBrains Mono', size:10} }, grid:{ display:false } },
-            y: { stacked: true, ticks: { color:'#64748b', font:{family:'Inter', size:11} }, grid:{ color:'#f1f5f9' } },
-          },
-        },
-      });
     },
   }));
 });
