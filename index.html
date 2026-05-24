@@ -119,7 +119,7 @@
     </h1>
 
     <div class="mt-6 text-ink-600 text-sm sm:text-base">
-      <span>Affiliation TBD</span>
+      <span>Tencent Youtu Lab</span>
     </div>
 
     <p class="mt-6 max-w-3xl text-ink-600 leading-relaxed">
@@ -159,33 +159,41 @@
 <section id="tldr" class="border-b border-ink-100 bg-white">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
     <h2 class="text-xs uppercase tracking-[0.18em] text-accent-700 font-semibold">TL;DR</h2>
-    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Three takeaways</h3>
+    <h3 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">Contributions</h3>
 
     <div class="mt-8 grid sm:grid-cols-3 gap-4">
       <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
         <span class="num-ring mb-3">i</span>
-        <h4 class="font-semibold text-ink-900">Two-axis taxonomy</h4>
+        <h4 class="font-semibold text-ink-900">
+          <span class="font-mono text-[13px] bg-ink-50 px-1.5 py-0.5 rounded">Problem Formalization</span>
+        </h4>
         <p class="mt-2 text-sm text-ink-600 leading-relaxed">
-          Architectural <em>nativity</em> (mid-fusion vs early-fusion) is orthogonal to
-          input&ndash;output <em>duality</em> (M2T / M2G / M2M). Together they make a precise
-          map for emergent NMM designs.
+          We first present the formal, systemic definition of NMM, establishing a principled
+          structural taxonomy based on <strong>integration depth</strong>
+          (<em>mid-/early-fusion</em>) and <strong>input&ndash;output duality</strong>
+          (<em>Multi-to-{Text, Target, Multi}</em>) to clarify the fragmented design space.
         </p>
       </article>
       <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
         <span class="num-ring mb-3">ii</span>
-        <h4 class="font-semibold text-ink-900">Each fusion regime imposes a training signature</h4>
+        <h4 class="font-semibold text-ink-900">
+          <span class="font-mono text-[13px] bg-ink-50 px-1.5 py-0.5 rounded">Technological Roadmap</span>
+        </h4>
         <p class="mt-2 text-sm text-ink-600 leading-relaxed">
-          Mid-fusion needs progressive unfreezing + differential LR; early-fusion makes
-          z-loss, QK-Norm, and modality-mixture scheduling preconditions, not refinements.
+          We systematically analyze the full lifecycle of NMM, extracting the core modal
+          bottlenecks and cross-cutting solutions across architectural designs, data
+          curricula, training strategies, inference deployment, and holistic evaluation.
         </p>
       </article>
       <article class="rounded-xl border border-ink-100 p-5 hover:border-accent-200 hover:bg-accent-50/30 transition">
         <span class="num-ring mb-3">iii</span>
-        <h4 class="font-semibold text-ink-900">RL scope &amp; OPD</h4>
+        <h4 class="font-semibold text-ink-900">
+          <span class="font-mono text-[13px] bg-ink-50 px-1.5 py-0.5 rounded">Future Outlook</span>
+        </h4>
         <p class="mt-2 text-sm text-ink-600 leading-relaxed">
-          Pathway-locality collapses under early-fusion's unified softmax, exposing
-          grounding-hack and see-saw failures &mdash; for which on-policy distillation (OPD)
-          is emerging as the structural response.
+          We carefully provide empirical insights from state-of-the-art implementations and
+          paradigms to deliver a visionary projection of future trajectories, suggesting
+          crucial strategic directions for the evolution toward advanced NMM.
         </p>
       </article>
     </div>
@@ -504,10 +512,12 @@
       </div>
       <pre id="bibtex-text" class="px-4 py-4 text-xs sm:text-sm font-mono text-ink-800 overflow-x-auto scroll-smooth-x leading-relaxed">@inproceedings{nmm2026roadmap,
   title     = {Toward Native Multimodal Modeling: A Roadmap},
-  author    = {Anonymous},
-  booktitle = {Proceedings of EMNLP 2026},
+  author    = {Siyu An and Junru Lu and Junnan Dong and Qiufeng Wang and
+               Yinghui Li and Weizhi Fei and Zichao Yu and Zheng Yuan and
+               Biao Liu and Haopeng Wang and Renzhao Liang and Yixuan Yang and
+               Yunhang Shen and Bo Ke and Keyu Chen and Linhao Luo and
+               Difan Zou and Xiao Huang and Di Yin and Ruizhi Qiao and Xing Sun},
   year      = {2026},
-  url       = {https://example.org/nmm-roadmap},
 }</pre>
     </div>
   </div>
