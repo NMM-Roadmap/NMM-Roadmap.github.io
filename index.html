@@ -171,6 +171,34 @@
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         Copy&nbsp;BibTeX
       </button>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+      <a href="Youtu_Lab___Native_Multimodal_Modeling_Roadmap.pdf"
+         download="NMM-Roadmap.pdf"
+         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium hover:bg-ink-800 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        Paper&nbsp;PDF
+      </a>
+      <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-100 bg-white text-sm font-medium hover:bg-ink-50 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        arXiv
+      </a>
+      <button @click="navigator.clipboard.writeText(document.getElementById('bibtex-text').textContent.trim()); $event.target.textContent='Copied!'; setTimeout(()=>$event.target.textContent='Copy BibTeX', 1500)"
+              x-data
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-accent-200 bg-accent-50 text-accent-700 text-sm font-medium hover:bg-accent-50/60 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Copy&nbsp;BibTeX
+      </button>
+
+      <a href="https://github.com/NMM-Roadmap/Awesome-NMM-List" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="inline-flex items-center h-[38px] transition-transform duration-150 hover:scale-[1.03]"
+         title="Star Awesome-NMM-List on GitHub">
+        <img src="https://img.shields.io/github/stars/NMM-Roadmap/Awesome-NMM-List?style=social" 
+             alt="GitHub stars" 
+             class="h-[20px] w-auto select-none" />
+      </a>
+    </div>
     </div>
   </div>
 </header>
